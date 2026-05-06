@@ -1,5 +1,5 @@
 
-New WordPress plugins should be created from the [CM-WP-Plugin-Template](https://github.com/UCF/CM-WP-Plugin-Template) repository. This template includes opinionated build tool and linter configurations for SCSS and JS assets following UCF Web Communications code standards.
+New WordPress themes should be created from the [CM-WP-Theme-Template](https://github.com/UCF/CM-WP-Theme-Template) repository. This template includes opinionated build tool and linter configurations for SCSS and JS assets following UCF Web Communications code standards. Generated themes include the [Athena Framework](https://ucf.github.io/Athena-Framework/).
 
 ## Prerequisites
 
@@ -11,9 +11,9 @@ New WordPress plugins should be created from the [CM-WP-Plugin-Template](https:/
 
 ## 1. Create the Repository from the Template
 
-1. Go to [https://github.com/UCF/CM-WP-Plugin-Template/generate](https://github.com/UCF/CM-WP-Plugin-Template/generate).
+1. Go to [https://github.com/UCF/CM-WP-Theme-Template/generate](https://github.com/UCF/CM-WP-Theme-Template/generate).
 2. Set the **Owner** to `UCF`.
-3. Enter a **Repository name** using the plugin's GitHub slug (e.g. `UCF-My-Plugin`).
+3. Enter a **Repository name** using the theme's GitHub slug (e.g. `My-Theme`).
 4. Leave the repository **Public** unless there is a specific reason for privacy.
 5. Click **Create repository**.
 
@@ -21,40 +21,39 @@ New WordPress plugins should be created from the [CM-WP-Plugin-Template](https:/
 
 ## 2. Clone and Set Up Locally
 
+Clone the new repository into your WordPress installation's `themes/` directory:
+
 ```bash
-git clone git@github.com:UCF/YOUR-PLUGIN-SLUG.git
-cd YOUR-PLUGIN-SLUG
+git clone git@github.com:UCF/YOUR-THEME-SLUG.git
+cd YOUR-THEME-SLUG
 npm install
 ```
 
 ---
 
-## 3. Rename the Main Plugin File
-
-Rename `my-project.php` to match your plugin's slug in lowercase (e.g. `ucf-my-plugin.php`). This is the file WordPress reads as the plugin entry point.
-
----
-
-## 4. Replace Template Placeholders
+## 3. Replace Template Placeholders
 
 The template uses two placeholder patterns throughout its files:
 
 | Placeholder | What to replace it with | Example |
 |---|---|---|
-| `{{My-Project}}` | The GitHub repository slug | `UCF-My-Plugin` |
-| `{{My Project}}` | The human-readable plugin name | `UCF My Plugin` |
+| `{{My-Project}}` | The GitHub repository slug | `My-Theme` |
+| `{{My Project}}` | The human-readable theme name | `My Theme` |
 
 Do a project-wide find-and-replace in your editor for both values. You can search for `{{` to locate any remaining placeholders after the initial replacements.
 
 ### Files that require placeholder replacement
 
-- `my-project.php` (now renamed) — plugin header metadata and `GitHub Plugin URI`
-- `README.txt` — plugin description, documentation links, and changelog
+- `style.css` — theme header (`Theme Name`, `Github Theme URI`)
+- `README.md` — theme description and documentation links
+- `CONTRIBUTING.md` — contributing guidelines links
 - `.github/` — issue templates and any other references
+
+> **Note:** `style.css` is **not** a registered stylesheet. It exists only to provide WordPress with the theme name and version. All style overrides go in `src/scss/` and are compiled to `static/css/`.
 
 ---
 
-## 5. Build Front-End Assets
+## 4. Build Front-End Assets
 
 The template uses Gulp to compile and lint SCSS and JavaScript.
 
@@ -65,7 +64,7 @@ The template uses Gulp to compile and lint SCSS and JavaScript.
 | `src/scss/style.scss` | `static/css/style.min.css` |
 | `src/js/script.js` | `static/js/script.min.js` |
 
-> The plugin template does **not** register or enqueue these assets automatically. You are responsible for adding `wp_enqueue_style` and `wp_enqueue_scripts` calls in your plugin code.
+> The theme template does **not** register or enqueue these assets automatically. You are responsible for adding `wp_enqueue_style` and `wp_enqueue_scripts` calls in your theme code.
 
 ### Run the initial build
 
@@ -97,7 +96,7 @@ To enable live browser reloading during development, copy the template config an
 cp gulp-config.template.json gulp-config.json
 ```
 
-In `gulp-config.json`, set `sync` to `true` and update `syncTarget` to the local URL of the WordPress site where you will test the plugin:
+In `gulp-config.json`, set `sync` to `true` and update `syncTarget` to the local URL of the WordPress site where you will test the theme:
 
 ```json
 {
@@ -110,17 +109,17 @@ In `gulp-config.json`, set `sync` to `true` and update `syncTarget` to the local
 
 ---
 
-## 6. Set Up the Project Wiki
+## 5. Set Up the Project Wiki
 
-All new plugins should have a GitHub wiki for documentation. Use the [CM-Documentation-Templates](https://github.com/UCF/CM-Documentation-Templates) plugin wiki template.
+All new themes should have a GitHub wiki for documentation. Use the [CM-Documentation-Templates](https://github.com/UCF/CM-Documentation-Templates) theme wiki template.
 
 1. In your new GitHub repository, click the **Wiki** tab and create the initial "Home" page (the content will be overwritten).
 
 2. Create a local directory for the wiki files and `cd` into it.
 
-3. Pull down the plugin wiki template:
+3. Pull down the theme wiki template:
    ```bash
-   git clone --depth=1 -b plugin-wiki git@github.com:UCF/CM-Documentation-Templates.git .; rm -rf .git
+   git clone --depth=1 -b theme-wiki git@github.com:UCF/CM-Documentation-Templates.git .; rm -rf .git
    ```
 
 4. Initialize a new git repo and push it to the wiki remote (replace `MY-PROJECT` with your repo name):
@@ -136,19 +135,18 @@ All new plugins should have a GitHub wiki for documentation. Use the [CM-Documen
 
 ---
 
-## 7. Add to UCF Packagist (if applicable)
+## 6. Add to UCF Packagist (if applicable)
 
-If the plugin will be installed via Composer from the UCF Packagist registry, two additional steps are needed. See [UCF Packagist Management](UCF%20Packagist%20Management.md) for full details.
+If the theme will be installed via Composer from the UCF Packagist registry, two additional steps are needed. See [UCF Packagist Management](UCF%20Packagist%20Management.md) for full details.
 
 1. **Add the repository to ucf-packagist** by running the [Add Package workflow](https://github.com/UCF/ucf-packagist/actions/workflows/satis-add-package.yml).
-2. **Add the release trigger workflow** to the new plugin repository at `.github/workflows/trigger-packagist-update.yml` so the registry rebuilds automatically on each new release.
+2. **Add the release trigger workflow** to the new theme repository at `.github/workflows/trigger-packagist-update.yml` so the registry rebuilds automatically on each new release.
 
 ---
 
 ## Summary Checklist
 
-- [ ] Repository created from [CM-WP-Plugin-Template](https://github.com/UCF/CM-WP-Plugin-Template/generate)
-- [ ] `my-project.php` renamed to the plugin slug
+- [ ] Repository created from [CM-WP-Theme-Template](https://github.com/UCF/CM-WP-Theme-Template/generate)
 - [ ] All `{{My-Project}}` and `{{My Project}}` placeholders replaced
 - [ ] `npm install` run
 - [ ] `gulp default` run successfully
